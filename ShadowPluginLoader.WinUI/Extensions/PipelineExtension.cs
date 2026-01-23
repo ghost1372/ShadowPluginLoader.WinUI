@@ -85,10 +85,6 @@ public static class PipelineExtension
         {
             if (uri.Scheme.StartsWith("http"))
             {
-                if (!uri.IsFile)
-                {
-                    Log.Warning("Scan Uri[{DirFullName}]: Not Support", uri.LocalPath);
-                }
                 return pipeline.Feed(new HttpFileMaterial(uri));
             }
             else if (!uri.IsFile && Directory.Exists(uri.LocalPath))
