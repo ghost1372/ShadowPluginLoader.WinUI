@@ -15,16 +15,19 @@
         <AutoPluginPackage>true</AutoPluginPackage>
         <!-- Auto Generate I18N -->
         <AutoGenerateI18N>true</AutoGenerateI18N>
+        <!-- Debug SourceGenerator-->
+        <DebugSourceGenerator>false</DebugSourceGenerator>
     </PropertyGroup>
 </Project>
 ```
 
-| 名称       |      类型       | 说明 |
-| ------------- | :-----------:  | ---- |
-| `IsPluginLoader`      | `bool`  | 该项目是否是插件加载器项目,详见[IsPluginLoader](#IsPluginLoader) |
-| `IsPlugin`      |   `bool`    |  该项目是否是插件项目,详见[IsPlugin](#IsPlugin) |
-| `AutoPluginPackage` |   `bool`     |  是否自动打包为插件(仅在`IsPlugin`为`true`时有效),详见[插件打包](/zh/plugin/pack) |
-| `AutoGenerateI18N` |   `bool`    |  是否自动生成I18N帮助类,详见[I18N国际化](/zh/advance/i18n) |
+| 名称                      |    类型    | 说明                                                        |
+|-------------------------|:--------:|-----------------------------------------------------------|
+| `IsPluginLoader`        |  `bool`  | 该项目是否是插件加载器项目,详见[IsPluginLoader](#IsPluginLoader)         |
+| `IsPlugin`              |  `bool`  | 该项目是否是插件项目,详见[IsPlugin](#IsPlugin)                        |
+| `AutoPluginPackage`     |  `bool`  | 是否自动打包为插件(仅在`IsPlugin`为`true`时有效),详见[插件打包](/zh/plugin/pack) |
+| `AutoGenerateI18N`      |  `bool`  | 是否自动生成I18N帮助类,详见[I18N国际化](/zh/advance/i18n)               |
+| `DebugSourceGenerator`  | `bool`   | 只对插件项目有效,是否可见源生成器的输出文件(启用后将生成于`GeneratedFiles`)                           |
 
 ::: warning 注意
 
@@ -46,6 +49,7 @@
 
 如果为`true`:
 - 从`.csproj`文件中自动生成出`plugin.json`
+- 从`PluginLoader项目`中自动复制`plugin.d.json`到`Plugin项目`目录
 - 允许使用[插件打包](/zh/plugin/pack)功能
 
 

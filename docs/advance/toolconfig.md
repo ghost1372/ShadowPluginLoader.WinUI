@@ -15,6 +15,8 @@ The file example is as follows:
         <AutoPluginPackage>true</AutoPluginPackage>
         <!-- Auto Generate I18N -->
         <AutoGenerateI18N>true</AutoGenerateI18N>
+        <!-- Debug SourceGenerator-->
+        <DebugSourceGenerator>false</DebugSourceGenerator>
     </PropertyGroup>
 </Project>
 ```
@@ -25,6 +27,7 @@ The file example is as follows:
 | `IsPlugin` | `bool` | Whether this project is a plugin project, see [IsPlugin](#IsPlugin) |
 | `AutoPluginPackage` | `bool` | Whether to automatically package as plugin (only effective when `IsPlugin` is `true`), see [Plugin Packaging](/plugin/pack) |
 | `AutoGenerateI18N` | `bool` | Whether to automatically generate I18N helper classes, see [I18N Internationalization](/advance/i18n) |
+| `DebugSourceGenerator` | `bool` | Applies only to the plugin project. Determines whether the source generator’s output files are visible (when enabled, they will be generated under `GeneratedFiles` |
 
 ::: warning Note
 
@@ -46,4 +49,5 @@ If `true`:
 
 If `true`:
 - Automatically generate `plugin.json` from `.csproj` file
+- Automatically copy `plugin.d.json` from the `PluginLoader project` to the `Plugin project` directory.
 - Allow using [plugin packaging](/plugin/pack) functionality

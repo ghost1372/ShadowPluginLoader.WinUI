@@ -21,7 +21,7 @@ public record ExampleMetaData : AbstractPluginMetaData
 
 你的元数据类**必须**使用`ExportMeta`
 
-会自动导出为`元数据定义文件`给后续的插件使用
+会自动导出为`元数据定义文件(plugin.d.json)`给后续的插件使用
 
 
 ## 继承

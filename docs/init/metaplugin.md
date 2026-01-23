@@ -21,7 +21,7 @@ The `ExportMeta` attribute indicates that this class is metadata that needs to b
 
 Your metadata class **must** use `ExportMeta`.
 
-It will automatically export as a `metadata definition file` for subsequent plugins to use.
+It will automatically export as a `metadata definition file (plugin.d.json)` for subsequent plugins to use.
 
 
 ## Inheritance
