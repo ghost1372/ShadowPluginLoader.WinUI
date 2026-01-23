@@ -13,7 +13,7 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>preview</LangVersion>
         <!-- Nuget -->
-        <Version>3.1.5</Version>
+        <Version>3.1.6</Version>
         <PackageId>ShadowPluginLoader.WinUI</PackageId>
         <Owner>kitUIN</Owner>
         <Authors>kitUIN</Authors>
@@ -43,7 +43,7 @@
         <PackageReference Include="ShadowPluginLoader.SourceGenerator" Version="3.0.7" />
         <PackageReference Include="ShadowObservableConfig.Yaml" Version="0.6.3" />
         <PackageReference Include="ShadowObservableConfig.Json" Version="0.6.3" />
-        <PackageReference Include="ShadowPluginLoader.Tool" Version="3.1.5" />
+        <PackageReference Include="ShadowPluginLoader.Tool" Version="3.1.6" />
         <PackageReference Include="NuGet.Versioning" Version="7.0.1" />
         <PackageReference Include="SharpCompress" Version="0.44.0" />
     </ItemGroup>
