@@ -1,4 +1,5 @@
-﻿using Windows.Storage;
+﻿using System.IO;
+using Windows.Storage;
 using ShadowObservableConfig.Attributes;
 using ShadowPluginLoader.WinUI.Enums;
 
@@ -31,6 +32,18 @@ public partial class BaseSdkConfig
     /// 
     /// </summary>
     public string TempFolderPath => System.IO.Path.Combine(StaticValues.BaseFolder, _tempFolder);
+
+    partial void AfterConfigInit()
+    {
+        if (!Directory.Exists(PluginFolderPath))
+        {
+            Directory.CreateDirectory(PluginFolderPath);
+        }
+        if (!Directory.Exists(TempFolderPath))
+        {
+            Directory.CreateDirectory(TempFolderPath);
+        }
+    }
 
     /// <summary>
     /// 
