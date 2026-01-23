@@ -71,7 +71,8 @@ public static class MetaDataHelper
             {
                 if (currentType == null || currentType == typeof(object) || !visitedTypes.Add(currentType)) return;
 
-                var props = currentType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+                var props = currentType.GetProperties(BindingFlags.Public | BindingFlags.Instance |
+                                                      BindingFlags.DeclaredOnly);
                 foreach (var prop in props)
                 {
                     var newPath = new List<PropertyInfo>(currentPath) { prop };
@@ -125,8 +126,9 @@ public static class MetaDataHelper
     /// <returns></returns>
     public static TMeta? ToMeta<TMeta>(string content) where TMeta : AbstractPluginMetaData
     {
-        return JsonSerializer.Deserialize<TMeta>(content, Options);
+        return AbstractPluginMetaData.ToMeta<TMeta>(content);
     }
+
     /// <summary>
     /// 
     /// </summary>

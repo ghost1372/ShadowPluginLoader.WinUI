@@ -1,6 +1,7 @@
 using NuGet.Versioning;
 using ShadowPluginLoader.WinUI.Models;
 using System;
+using System.Text.Json;
 
 namespace ShadowPluginLoader.WinUI.Interfaces;
 
@@ -33,17 +34,12 @@ internal interface IPluginMetaData
     /// Plugin Sdk Version (When Build)
     /// </summary>
     VersionRange SdkVersion { get; init; }
-
-    /// <summary>
-    /// Plugin Type
-    /// </summary>
-    PluginEntryPointType MainPlugin { get; }
-
+    
     /// <summary>
     /// Plugin Dependencies
     /// </summary>
     PluginDependency[] Dependencies { get; init; }
-
+    
     /// <summary>
     /// Loading Order Priority
     /// Determines the execution order of the plugin. 
@@ -51,13 +47,14 @@ internal interface IPluginMetaData
     /// </summary>
     int Priority { get; init; }
 
-    /// <summary>
-    /// EntryPoints
-    /// </summary>
-    PluginEntryPoint[] EntryPoints { get; init; }
 
     /// <summary>
     /// BuiltIn Plugin
     /// </summary>
     bool BuiltIn { get; init; }
+    
+    /// <summary>
+    /// Raw JsonElement
+    /// </summary>
+    JsonElement Raw { get; }
 }

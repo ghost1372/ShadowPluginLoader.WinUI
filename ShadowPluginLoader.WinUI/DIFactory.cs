@@ -34,7 +34,7 @@ public static class DiFactory
     /// </summary>
     public static void Init<TAPlugin, TMeta>()
         where TAPlugin : AbstractPlugin<TMeta>
-        where TMeta : AbstractPluginMetaData
+        where TMeta : BasePluginMetaData
     {
         MetaDataHelper.Init<TMeta>();
         var baseSdkConfig = BaseSdkConfig.Load();

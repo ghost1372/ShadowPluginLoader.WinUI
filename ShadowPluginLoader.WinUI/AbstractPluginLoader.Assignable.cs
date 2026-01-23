@@ -14,7 +14,7 @@ namespace ShadowPluginLoader.WinUI;
 /// </summary>
 public abstract partial class AbstractPluginLoader<TMeta, TAPlugin> : IPluginLoader<TMeta, TAPlugin>
     where TAPlugin : AbstractPlugin<TMeta>
-    where TMeta : AbstractPluginMetaData
+    where TMeta : BasePluginMetaData
 {
     /// <summary>
     /// DependencyChecker

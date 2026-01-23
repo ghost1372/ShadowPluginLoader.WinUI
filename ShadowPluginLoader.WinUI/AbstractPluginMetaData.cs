@@ -5,6 +5,8 @@ using ShadowPluginLoader.WinUI.Models;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text.Json;
+using ShadowPluginLoader.WinUI.Helpers;
 
 namespace ShadowPluginLoader.WinUI;
 
@@ -50,11 +52,6 @@ public abstract record AbstractPluginMetaData : IPluginMetaData
     [Meta(Required = false, AsString = true)]
     public VersionRange SdkVersion { get; init; } = null!;
 
-    /// <summary>
-    /// <inheritdoc cref="IPluginMetaData.MainPlugin"/>
-    /// </summary>
-    [Meta(Exclude = true)]
-    public PluginEntryPointType MainPlugin { get; private set; } = null!;
 
     /// <summary>
     /// <inheritdoc cref="IPluginMetaData.Priority"/>
@@ -68,11 +65,6 @@ public abstract record AbstractPluginMetaData : IPluginMetaData
     [Meta(Exclude = true, AsString = true)]
     public PluginDependency[] Dependencies { get; init; } = [];
 
-    /// <summary>
-    /// <inheritdoc cref="IPluginMetaData.EntryPoints"/>
-    /// </summary>
-    [Meta(Exclude = true)]
-    public PluginEntryPoint[] EntryPoints { get; init; } = [];
 
     /// <summary>
     /// 
@@ -80,50 +72,26 @@ public abstract record AbstractPluginMetaData : IPluginMetaData
     private static readonly Type TargetTypeList = typeof(PluginEntryPointType[]);
 
     /// <summary>
-    /// LoadEntryPoint
+    /// <inheritdoc cref="IPluginMetaData.Raw"/>
     /// </summary>
+    [Meta(Exclude = true)]
+    public JsonElement Raw { get; private set; }
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="content"></param>
+    /// <typeparam name="TMeta"></typeparam>
     /// <returns></returns>
-    public void LoadEntryPoint(PropertyPath[] propertyPaths, Assembly assembly)
+    public static TMeta? ToMeta<TMeta>(string content) where TMeta : AbstractPluginMetaData
     {
-        foreach (var path in propertyPaths)
-        {
-            object? current = this;
-            for (var i = 0; i < path.Path.Count - 1; i++)
-            {
-                var prop = path.Path[i];
-                var next = prop.GetValue(current);
-                if (next == null)
-                {
-                    next = Activator.CreateInstance(prop.PropertyType);
-                    prop.SetValue(current, next);
-                }
-                current = next;
-            }
+        using var doc = JsonDocument.Parse(content);
+        var root = doc.RootElement;
 
-            var targetProp = path.TargetProperty;
-            var isList = targetProp.PropertyType == TargetTypeList;
-
-            if (isList)
-            {
-                List<PluginEntryPointType> entryPoints = [];
-                foreach (var entryPoint in EntryPoints)
-                {
-                    if (entryPoint.Name == targetProp.Name && assembly.GetType(entryPoint.Type) is { } type)
-                        entryPoints.Add(new PluginEntryPointType(type));
-                }
-                targetProp.SetValue(current, entryPoints.ToArray());
-            }
-            else
-            {
-                PluginEntryPointType? entryPoint = null;
-                foreach (var ep in EntryPoints)
-                {
-                    if (ep.Name != targetProp.Name || assembly.GetType(ep.Type) is not { } type) continue;
-                    entryPoint = new PluginEntryPointType(type);
-                    break;
-                }
-                targetProp.SetValue(current, entryPoint);
-            }
-        }
+        var meta = root.Deserialize<TMeta>(MetaDataHelper.Options);
+        if (meta != null) meta.Raw = root.Clone();
+        return meta;
     }
+
+    
 }

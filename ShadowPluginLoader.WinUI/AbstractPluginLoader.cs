@@ -65,9 +65,9 @@ public abstract partial class AbstractPluginLoader<TMeta, TAPlugin>
         stopwatch.Start();
         try
         {
-            BeforeLoadPlugin(meta.MainPlugin.EntryPointType, meta);
-            var instance = LoadMainPlugin(meta.MainPlugin.EntryPointType, meta);
-            AfterLoadPlugin(meta.MainPlugin.EntryPointType, instance, meta);
+            BeforeLoadPlugin(meta.MainPlugin, meta);
+            var instance = LoadMainPlugin(meta.MainPlugin, meta);
+            AfterLoadPlugin(meta.MainPlugin, instance, meta);
             _plugins[meta.Id] = instance;
             var enabled = PluginSettingsHelper.GetPluginIsEnabled(meta.Id);
             instance.Loaded();

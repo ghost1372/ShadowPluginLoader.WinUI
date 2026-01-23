@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CustomExtensions.WinUI;
@@ -21,9 +20,6 @@ using ShadowPluginLoader.WinUI.Helpers;
 using ShadowPluginLoader.WinUI.Models;
 using ShadowPluginLoader.WinUI.Products;
 using ShadowPluginLoader.WinUI.Workpieces;
-using SharpCompress.Archives;
-using SharpCompress.Common;
-using SharpCompress.Readers;
 
 namespace ShadowPluginLoader.WinUI.Processors;
 
@@ -32,7 +28,7 @@ namespace ShadowPluginLoader.WinUI.Processors;
 /// </summary>
 public partial class MainProcessor<TAPlugin, TMeta> : IMainProcessor
     where TAPlugin : AbstractPlugin<TMeta>
-    where TMeta : AbstractPluginMetaData
+    where TMeta : BasePluginMetaData
 {
     private readonly SemaphoreSlim _finishLock = new(1, 1);
 
@@ -159,6 +155,7 @@ public partial class MainProcessor<TAPlugin, TMeta> : IMainProcessor
             CheckSdkVersion(beforeSorts);
             var sortResult = DependencyChecker.DetermineLoadOrder(beforeSorts.ToList());
             LoggerMetaSort(sortResult.Result);
+            if (sortResult.Result.Count == 0) return results;
             await GetMainPluginTypeTask(sortResult.Result.ToArray(), progress);
             sortResult.Result.ForEach(t =>
             {
@@ -198,12 +195,8 @@ public partial class MainProcessor<TAPlugin, TMeta> : IMainProcessor
     private async Task GetMainPluginTypeTask(SortPluginData<TMeta>[] pluginDataList,
         IProgress<PipelineProgress>? progress = null)
     {
-        int totalPlugins = pluginDataList.Length;
-
-        if (totalPlugins == 0) return;
-
         var completedPlugins = 0;
-        var weight = 100.0 / totalPlugins;
+        var weight = 100.0 / pluginDataList.Length;
 
         var tasks = pluginDataList.Select(async (data) =>
         {
@@ -234,7 +227,7 @@ public partial class MainProcessor<TAPlugin, TMeta> : IMainProcessor
     /// Pre Load
     /// </summary>
     /// <exception cref="PluginScanException"></exception>
-    protected async Task<Tuple<string, Type>> GetMainPluginType(SortPluginData<TMeta> sortPluginData)
+    protected async Task GetMainPluginType(SortPluginData<TMeta> sortPluginData)
     {
         var dllFileUri = new Uri(sortPluginData.Link, "../" + sortPluginData.MetaData.DllName + ".dll");
         var dllFilePath = dllFileUri.LocalPath;
@@ -242,9 +235,7 @@ public partial class MainProcessor<TAPlugin, TMeta> : IMainProcessor
 
         var asm = await ApplicationExtensionHost.Current.LoadExtensionAsync(dllFilePath);
         var assembly = asm.ForeignAssembly;
-
-        sortPluginData.MetaData.LoadEntryPoint(MetaDataHelper.Properties!, assembly);
-
+        sortPluginData.MetaData.ToBase(assembly);
         var types = assembly.GetExportedTypes()
             .Where(t => t is { IsClass: true, IsAbstract: false } && typeof(BaseConfig).IsAssignableFrom(t) &&
                         t.GetCustomAttribute<ObservableConfigAttribute>() is { FileName: { Length: > 0 } })
@@ -267,9 +258,8 @@ public partial class MainProcessor<TAPlugin, TMeta> : IMainProcessor
             .ToArray();
         // Load Config File
         await Task.WhenAll(types);
-        DiFactory.Services.Register(typeof(TAPlugin), sortPluginData.MetaData.MainPlugin.EntryPointType,
+        DiFactory.Services.Register(typeof(TAPlugin), sortPluginData.MetaData.MainPlugin,
             reuse: Reuse.Singleton,
             serviceKey: sortPluginData.Id, made: Parameters.Of.Type(_ => sortPluginData.MetaData));
-        return new Tuple<string, Type>(sortPluginData.Id, sortPluginData.MetaData.MainPlugin.EntryPointType);
     }
 }
