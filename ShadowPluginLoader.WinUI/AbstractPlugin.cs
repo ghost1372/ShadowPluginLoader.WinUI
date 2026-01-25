@@ -47,7 +47,7 @@ public abstract class AbstractPlugin<TMeta> : IPlugin<TMeta>
     /// <summary>
     /// Init
     /// </summary>
-    protected void Init()
+    protected virtual void Init()
     {
         foreach (var item in ResourceDictionaries)
         {
