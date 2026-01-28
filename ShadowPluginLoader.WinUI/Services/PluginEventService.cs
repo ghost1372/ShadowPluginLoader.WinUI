@@ -7,7 +7,7 @@ namespace ShadowPluginLoader.WinUI.Services;
 /// <summary>
 /// PluginEvent Service
 /// </summary>
-public class PluginEventService
+public class PluginEventService: IPluginEventService
 {
     private ILogger Logger { get; }
 
